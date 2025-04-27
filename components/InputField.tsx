@@ -1,5 +1,5 @@
+import React, { forwardRef, ForwardedRef } from 'react';
 import { colors } from '@/constants/index';
-import React from 'react';
 import {
   StyleSheet,
   View,
@@ -14,12 +14,10 @@ interface InputFieldProps extends TextInputProps {
   error?: string;
 }
 
-function InputField({
-  label,
-  variant = 'filled',
-  error,
-  ...props
-}: InputFieldProps) {
+function InputField(
+  { label, variant = 'filled', error, ...props }: InputFieldProps,
+  ref?: ForwardedRef<TextInput>
+) {
   return (
     <View>
       {label && <Text style={styles.label}>{label}</Text>}
@@ -27,12 +25,17 @@ function InputField({
         style={[
           styles.container,
           styles[variant],
+          props.multiline && styles.multiline,
           Boolean(error) && styles.inputError,
         ]}
       >
         <TextInput
+          ref={ref}
           placeholderTextColor={colors.GRAY_500}
           style={styles.input}
+          autoCapitalize="none"
+          spellCheck={false}
+          autoCorrect={false}
           {...props}
         />
       </View>
@@ -73,6 +76,11 @@ const styles = StyleSheet.create({
   inputError: {
     backgroundColor: colors.RED_100,
   },
+  multiline: {
+    alignItems: 'flex-start',
+    paddingVertical: 10,
+    height: 200,
+  },
 });
 
-export default InputField;
+export default forwardRef(InputField);
